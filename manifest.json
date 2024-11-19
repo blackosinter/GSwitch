@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "GoogleLang",
+    "version": "1.0",
+    "description": "Добавляет кнопку выбора страны и языка на Google Lens.",
+    "permissions": ["scripting"],
+    "host_permissions": ["https://lens.google.com/*", "https://www.google.com/*"],
+    "content_scripts": [
+      {
+        "matches": ["https://lens.google.com/*"],
+        "js": ["contentLens.js"]
+      },
+      {
+        "matches": ["https://www.google.com/*"],
+        "js": ["contentSearch.js"]
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["languages.json", "countries.json"],
+        "matches": ["<all_urls>"]
+      }
+    ]
+  }
