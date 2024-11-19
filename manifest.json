@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "GoogleSwitch",
     "version": "1.0",
-    "description": "Добавляет кнопку выбора страны и языка на Google Lens.",
+    "description": "This extension simplifies changing language and country settings for Google Search and Google Lens.",
     "permissions": ["scripting"],
     "host_permissions": ["https://lens.google.com/*", "https://www.google.com/*"],
     "content_scripts": [
