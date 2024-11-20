@@ -86,7 +86,7 @@ function main() {
 
   getCoordinates()
 
-  // Function to create a search input with autocomplete
+  // Function to create a search input with autocomplete 
   function createSearchInput(options, container, placeholder) {
     const input = document.createElement("input");
     input.style.width = "240%";
@@ -206,8 +206,6 @@ function main() {
       }
     }
   }
-
-  // Set initial values when the page loads
 
   // Add event listener for button click
   applyButton.addEventListener("click", () => {
