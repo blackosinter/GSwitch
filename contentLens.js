@@ -55,21 +55,22 @@ function main() {
 
 
   function getCoordinates(isExotic) {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const div = document.querySelector('.VfPpkd-Jh9lGc');
-      const rect = div.getBoundingClientRect();
-      if (isExotic){
-      container.style.left = `${rect.right - rect.width + 280 + 20}px`
-      }
-      else {
-          container.style.left = `${rect.right - rect.width - 280 - 20}px`
-      }
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const div = document.querySelector('.VfPpkd-Jh9lGc');
+    const rect = div.getBoundingClientRect();
+
+    if (isExotic){
+        container.style.left = `${rect.right - rect.width + 280 + 20}px`
+    }
+    else {
+        container.style.left = `${rect.right - rect.width - 280 - 20}px`
+    }
   }
 
   getCoordinates(isExotic)
 
-  window.addEventListener("resize", getCoordinates(isExotic));
+  window.addEventListener("resize", () => getCoordinates(isExotic));
 
 
   // Function to create a search input with autocomplete
