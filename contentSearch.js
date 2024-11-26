@@ -48,7 +48,7 @@ function main() {
   languageButton.classList.add("language-switch-button");
 
   const icon = document.createElement("img");
-  icon.src = "https://i.ibb.co/N1spbt2/language-121815.png"; // URL of your icon
+  icon.src = chrome.runtime.getURL("icons/192.png"); // URL of your icon
   icon.alt = "Switch Language";
   icon.style.width = "20px";
   icon.style.height = "20px";
@@ -80,8 +80,6 @@ function main() {
     const rect = div.getBoundingClientRect();
     container.style.left = `${rect.left - 145}px`
     container.style.top = `${rect.bottom + 15}px`
-    console.log(rect.right);
-    console.log(container.style.left);
   }
 
   getCoordinates()

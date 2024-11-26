@@ -3,6 +3,17 @@
     "name": "GoogleSwitch",
     "version": "1.0",
     "description": "This extension simplifies changing language and country settings for Google Search and Google Lens.",
+    "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+    },
+    "action": {
+      "default_icon": {
+        "16": "icons/16.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
+      }},
     "permissions": ["scripting"],
     "host_permissions": ["https://lens.google.com/*", "https://www.google.com/*"],
     "content_scripts": [
@@ -17,7 +28,7 @@
     ],
     "web_accessible_resources": [
       {
-        "resources": ["languages.json", "countries.json"],
+        "resources": ["languages.json", "countries.json", "icons/192.png"],
         "matches": ["<all_urls>"]
       }
     ]
