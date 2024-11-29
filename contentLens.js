@@ -192,7 +192,6 @@ function main() {
 
   // Add event listener for apply button
   applyButton.addEventListener("click", () => {
-    console.log("ты нажал на кнопку!");
     const selectedLanguage = languageContainer.querySelector("input").value;
     const selectedCountry = countryContainer.querySelector("input").value;
 
@@ -201,7 +200,6 @@ function main() {
     const country = countries.find(cnt => cnt.name.toLowerCase() === selectedCountry.toLowerCase());
     
     if (exotic.includes(language.code)) {
-      console.log("не экзотичная хуйня");
       isExotic = 1;
       getCoordinates(isExotic);
     }
