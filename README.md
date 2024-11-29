@@ -21,20 +21,10 @@ This extension simplifies changing language and country settings for Google Sear
 ## Usage
 <h1>Google Search</h1>
 
-
-![ezgif-5-9f2079e9a5](https://github.com/user-attachments/assets/84afba04-afe6-4583-bfa6-8de6a07b4b9b)
-
-
 Click on the Earth icon next to the search box and select your preferred language and country.
 If no country is specified, the region will default to your current location.
 
 <h1>Google Lens</h1>
-
-
-![ezgif-2-9597c6135e](https://github.com/user-attachments/assets/37203e57-c27f-4f49-b7b1-5efc65c3d2d3)
-
-
-
 
 Upload your photo and change the language and country you like.
 
