@@ -1,35 +1,25 @@
 {
-    "manifest_version": 3,
-    "name": "GoogleSwitch",
-    "version": "1.0",
-    "description": "This extension simplifies changing language and country settings for Google Search and Google Lens.",
-    "icons": {
+  "manifest_version": 3,
+  "name": "GSwitch",
+  "version": "1.1",
+  "description": "Change Google Search language and country.",
+  "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
-    },
-    "action": {
-      "default_icon": {
-        "16": "icons/16.png",
-        "48": "icons/48.png",
-        "128": "icons/128.png"
-      }},
-    "permissions": ["scripting"],
-    "host_permissions": ["https://lens.google.com/*", "https://www.google.com/*"],
-    "content_scripts": [
-      {
-        "matches": ["https://lens.google.com/*"],
-        "js": ["contentLens.js"]
-      },
-      {
-        "matches": ["https://www.google.com/*"],
-        "js": ["contentSearch.js"]
-      }
-    ],
-    "web_accessible_resources": [
-      {
-        "resources": ["languages.json", "countries.json", "icons/192.png"],
-        "matches": ["<all_urls>"]
-      }
-    ]
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.google.com/*"],
+      "exclude_matches": ["https://www.google.com/maps*"],
+      "js": ["contentSearch.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["languages.json", "countries.json", "icons/192.png"],
+      "matches": ["https://www.google.com/*"]
+    }
+  ]
+}
