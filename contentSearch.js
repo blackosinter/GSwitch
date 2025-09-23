@@ -1,256 +1,264 @@
-// Get the page background color
-const pageColor = window.getComputedStyle(document.querySelector('body')).backgroundColor;
+const pageColor = getComputedStyle(document.body).backgroundColor;
 
-let languages = [];
-let countries = [];
+let languages = [], countries = []
 
-// Function to load JSON files
+if (pageColor === 'rgb(255, 255, 255)') {
+  globeColor = 'rgb(70, 70, 70)'
+} else {
+  globeColor = 'rgb(190, 190, 190)'
+}
+
+
 async function loadData() {
   try {
-    // Load both JSON files
-    const response1 = await fetch(chrome.runtime.getURL('languages.json'));
-    languages = await response1.json();
-
-    const response2 = await fetch(chrome.runtime.getURL('countries.json'));
-    countries = await response2.json();
-
-  } catch (error) {
-    console.error('Error loading JSON files:', error);
+    const [resLang, resCountry] = await Promise.all([
+      fetch(chrome.runtime.getURL('languages.json')),
+      fetch(chrome.runtime.getURL('countries.json'))
+    ]);
+    [languages, countries] = await Promise.all([resLang.json(), resCountry.json()]);
+  } catch (e) {
+    console.error('Failed to load dictionaries', e);
   }
 }
 
-// Call the data loading function
-async function initialize() {
-  // Wait for the data to load
-  await loadData();
-  main();
-}
-
-initialize();
+(async function init(){ await Promise.all([loadData()]); main(); })();
 
 function main() {
+  // Кнопка
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.classList.add('language-switch-button');
+  Object.assign(btn.style, {
+    display: 'flex', flex: '0 1 auto', alignItems: 'center', justifyContent: 'center',
+    border: 'none', padding: '0 8px', borderRadius: '5px', cursor: 'pointer',
+    width: '35px', background: 'transparent', lineHeight: '44px', boxSizing: 'border-box'
+  });
 
-  window.addEventListener("resize", getCoordinates);
+  const icon = document.createElement('span');
+  const iconUrl = chrome.runtime.getURL('icons/192.png');
+  Object.assign(icon.style, {
+    display: 'inline-block', width: '20px', height: '20px',
+    backgroundColor: globeColor,
+    WebkitMask: `url(${iconUrl}) center / contain no-repeat`,
+    mask: `url(${iconUrl}) center / contain no-repeat`,
+    verticalAlign: 'middle'
+  });
+  btn.appendChild(icon);
 
-  const languageButton = document.createElement("button");
-  languageButton.style.display = "flex";
-  languageButton.type = "button";
-  languageButton.style.flex = "0 1 auto";
-  languageButton.style.alignItems = "center";
-  languageButton.style.justifyContent = "center";
-  languageButton.style.border = "none";
-  languageButton.style.padding = "0px 8px";
-  languageButton.style.borderRadius = "5px";
-  languageButton.style.cursor = "pointer";
-  languageButton.style.width = "35px";
-  languageButton.style.background = "transparent";
-  languageButton.style.lineHeight = "44px";
-  languageButton.classList.add("language-switch-button");
+  waitForElement('.SDkEP').then(h=>h.appendChild(btn)).catch(()=>document.body.appendChild(btn));
 
-  const icon = document.createElement("img");
-  icon.src = chrome.runtime.getURL("icons/192.png"); // URL of your icon
-  icon.alt = "Switch Language";
-  icon.style.width = "20px";
-  icon.style.height = "20px";
-  languageButton.appendChild(icon);
 
-  const searchButton = document.querySelector(".SDkEP");
-  if (searchButton) {
-    searchButton.appendChild(languageButton); // Insert the button after "Search"
+ const pop = document.createElement('div');
+Object.assign(pop.style, {
+  position: 'fixed',
+  zIndex: '2147483647',
+  padding: '10px',             
+  borderRadius: '12px',
+  boxShadow: '0 10px 30px rgba(0,0,0,.25)',
+  backgroundColor: pageColor,
+  display: 'none',
+  width: '340px',              
+  boxSizing: 'border-box',
+  border: '1px solid rgba(255,255,255,.06)'
+});
+document.body.appendChild(pop);
+
+function place() {
+  const r = btn.getBoundingClientRect();
+  const w = pop.offsetWidth || 340;
+  const h = pop.offsetHeight || 0;
+  const left = Math.min(Math.max(8, r.left - w / 2), window.innerWidth - (w + 8));
+  const top  = Math.min(r.bottom + 8, window.innerHeight - (h + 8));
+  pop.style.left = left + 'px';
+  pop.style.top  = top  + 'px';
+}
+window.addEventListener('resize', place);
+window.addEventListener('scroll', place, { passive: true });
+
+  const css = document.createElement('style');
+  css.textContent = `
+  :root {
+    --gs-h: 30px; 
+    --gs-font: 11.5px;
+    --gs-gap: 8px;
+    --gs-font-family: Roboto;
   }
 
-  const container = document.createElement("div");
-  container.style.position = "fixed";  // Position it at the top
-  container.style.zIndex = "1000";
-  container.style.padding = "3px";
-  container.style.borderRadius = "15px";
-  container.style.boxShadow = "0px 1px 1px #0d0d0d";
-  container.style.fontFamily = "Roboto";
-  container.style.fontSize = "10px";
-  container.style.width = "280px"; // Increase container width for horizontal layout
-  container.style.height = "50px";
-  container.style.display = "none";
-  container.style.backgroundColor = pageColor;
-  container.style.direction = "ltr";
-
-  function getCoordinates() {
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    const div = document.querySelector('.language-switch-button');
-    const rect = div.getBoundingClientRect();
-    container.style.left = `${rect.left - 145}px`
-    container.style.top = `${rect.bottom + 15}px`
+  .gs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: var(--gs-gap);
+    align-items: center;
   }
 
-  getCoordinates()
+  .gs-pill { position: relative; }
 
-  // Function to create a search input with autocomplete 
-  function createSearchInput(options, container, placeholder) {
-    const input = document.createElement("input");
-    input.style.width = "240%";
-    input.style.padding = "4px";
-    input.style.borderRadius = "10px";
-    input.style.border = "1px groove #575859";
-    input.style.fontSize = "12px";
-    input.style.marginRight = "15px";  // Space between fields
-    input.placeholder = placeholder; // Set placeholder text
-    container.appendChild(input);
-    input.style.padding = "2px";
-    input.style.textAlign = "center";
+  .gs-pill input {
+    width: 100%;
+    height: var(--gs-h);
+    line-height: var(--gs-h);
+    padding: 0 12px; 
+    border-radius: 9999px;
+    box-sizing: border-box;
+    border: 1px solid #575859;
+    background: rgba(255,255,255,.06);
+    color: inherit;
+    text-align: center;
+    font-size: var(--gs-font);
+    outline: none;
+  }
 
-    const dropdown = document.createElement("div");
-    dropdown.style.position = "absolute";
-    dropdown.style.boxShadow = "0px 4px 8px rgba(0, 0, 0, 0.1)";
-    dropdown.style.width = "100%";
-    dropdown.style.maxHeight = "200px";
-    dropdown.style.overflowY = "auto";
-    dropdown.style.top = "100%";
-    dropdown.style.display = "none";
-    dropdown.style.backgroundColor = pageColor;
-    container.appendChild(dropdown);
+  .gs-dropdown {
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(100% + 6px);
+    background: ${pageColor};
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    max-height: 180px;
+    overflow: auto;
+    display: none;
+    border: 1px solid rgba(255,255,255,.06);
+  }
 
-    const updateDropdown = (filter = "") => {
-      dropdown.innerHTML = ""; // Clear the dropdown list
-      const filteredOptions = options.filter(option => 
-        option.name.toLowerCase().includes(filter.toLowerCase())
-      );
-      filteredOptions.forEach(option => {
-        const item = document.createElement("div");
-        item.style.padding = "6px";
-        item.style.cursor = "pointer";
-        item.textContent = option.name;
-        item.addEventListener("click", () => {
-          input.value = option.name;
-          dropdown.style.display = "none"; // Close the dropdown
+  .gs-item { padding: 8px 10px; cursor: pointer; }
+  .gs-item:hover { background: rgba(255,255,255,.08); }
+
+  .gs-apply {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--gs-h);  
+    padding: 0 12px;
+    border-radius: 9999px;
+    border: 0;
+    cursor: pointer;
+    font-size: var(--gs-font);
+    font-weight: 500;
+  }
+`;
+  document.head.appendChild(css);
+
+  function createSearchInput(options, placeholder, idSuffix) {
+    const wrap = document.createElement('div'); wrap.className = 'gs-pill';
+    const input = document.createElement('input'); input.placeholder = placeholder;
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+
+    const dropdown = document.createElement('div'); dropdown.className = 'gs-dropdown';
+    const ddId = `gs-dd-${idSuffix}-${Math.random().toString(36).slice(2,7)}`;
+    dropdown.id = ddId; dropdown.setAttribute('role', 'listbox');
+    input.setAttribute('aria-controls', ddId);
+
+    wrap.append(input, dropdown);
+
+    const update = (q='') => {
+      dropdown.innerHTML = '';
+      const list = options.filter(o => o.name.toLowerCase().includes(q.toLowerCase()));
+      const frag = document.createDocumentFragment();
+      list.forEach(o => {
+        const d = document.createElement('div');
+        d.className = 'gs-item'; d.textContent = o.name; d.setAttribute('role', 'option');
+        d.addEventListener('click', e => {
+          e.stopPropagation();
+          input.value = o.name;
+          dropdown.style.display = 'none';
+          input.setAttribute('aria-expanded', 'false');
+          input.blur();
         });
-        dropdown.appendChild(item);
+        frag.appendChild(d);
       });
-      dropdown.style.display = filteredOptions.length ? "block" : "none"; // Show only if there are items
+      dropdown.appendChild(frag);
+      const open = list.length > 0;
+      dropdown.style.display = open ? 'block' : 'none';
+      input.setAttribute('aria-expanded', open ? 'true' : 'false');
     };
 
-    // Filter the list when input is focused
-    input.addEventListener("focus", () => {
-      input.value = ""; // Clear input value
-      updateDropdown(); // Show all items
-    });
-    
-    // Filter the list while typing
-    input.addEventListener("input", () => {
-      updateDropdown(input.value); // Filter the list
-    });
+    input.addEventListener('focus', (e) => { if (e.isTrusted) update(''); });
+    input.addEventListener('input', () => update(input.value));
 
-    document.addEventListener("click", (event) => {
-      if (!container.contains(event.target)) {
-        dropdown.style.display = "none";
-      }
-    });
+    return { wrap, input, dropdown, update };
   }
 
-  // Create container for input fields and button
-  const fieldsContainer = document.createElement("div");
-  fieldsContainer.style.display = "flex";  // Arrange elements in a row
-  fieldsContainer.style.justifyContent = "space-between";  // Space between fields
-  fieldsContainer.style.alignItems = "center";  // Align vertically
-  fieldsContainer.style.gap = "72px"; // Set space between fields
+  const grid = document.createElement('div'); grid.className = 'gs-grid';
+  const lang = createSearchInput(languages, 'Language', 'lang');
+  const ctr  = createSearchInput(countries, 'Country', 'ctr');
 
-  // Create input fields for language and country search
-  const languageContainer = document.createElement("div");
-  createSearchInput(languages, languageContainer, "Language");
-  fieldsContainer.appendChild(languageContainer);
-
-  const countryContainer = document.createElement("div");
-  createSearchInput(countries, countryContainer, "Country");
-  fieldsContainer.appendChild(countryContainer);
-
-  // Create the apply button
-  const applyButton = document.createElement("button");
-  applyButton.textContent = "Apply";
-  applyButton.style.padding = "6px";
-  applyButton.style.background = "linear-gradient(to right, #00c6ff, #0072ff)";
-  applyButton.style.color = "white";
-  applyButton.style.border = "none";
-  applyButton.style.borderRadius = "5px";
-  applyButton.style.cursor = "pointer";
-  applyButton.style.marginTop = "0px"; // Space between fields and button
-  applyButton.style.alignSelf = "center"; // Vertically center the button
-  applyButton.style.marginLeft = "72px";
-  applyButton.style.boxShadow = "0px 3px 5px rgba(0, 0, 0, 0.1)";
-
-  function hideContainerIfClickedOutside(event) {
-    // Check if click is outside the container
-    if (!container.contains(event.target) && event.target !== languageButton) {
-      container.style.display = "none"; // Hide the container
-    }
-  }
-
-  // Add event listener for document clicks
-  document.addEventListener("click", hideContainerIfClickedOutside);
-
-  function setInitialValues() {
-    const currentUrl = new URL(window.location.href);
-    const hlValue = currentUrl.searchParams.get("hl");
-    if (hlValue) {
-      console.log("Language exists");
-      const [languageCode, countryCode] = hlValue.split("-");
-      const language = languages.find(lang => lang.code === languageCode);
-      const country = countries.find(cnt => cnt.code === countryCode);
-
-      if (language) {
-        languageContainer.querySelector("input").value = language.name;
-      }
-
-      if (country) {
-        countryContainer.querySelector("input").value = country.name;
-      }
-    }
-  }
-
-  // Add event listener for button click
-  applyButton.addEventListener("click", () => {
-    const selectedLanguage = languageContainer.querySelector("input").value;
-    const selectedCountry = countryContainer.querySelector("input").value;
-
-    // Check if the selected values match
-    const language = languages.find(lang => lang.name.toLowerCase() === selectedLanguage.toLowerCase());
-    const country = countries.find(cnt => cnt.name.toLowerCase() === selectedCountry.toLowerCase());
-
-    if (language) {
-      let hlValue;
-      let currentUrl;
-      if (country){
-        hlValue = `${language.code}-${country.code}`;
-        currentUrl = new URL(window.location.href);
-      }
-      else {
-        hlValue = `${language.code}`;
-        currentUrl = new URL(window.location.href);
-      }
-      // Set the new hl parameter
-      currentUrl.searchParams.set("hl", hlValue);
-
-      window.location.href = currentUrl.toString();
-    }
-  });
-
-  languageButton.addEventListener("click", (event) => {
-    event.stopPropagation(); // Stop event bubbling to avoid triggering document click
-    if (container.style.display == "none") {  
-      container.style.display = "flex";
+  const apply = document.createElement('button'); apply.className = 'gs-apply'; apply.textContent = 'Apply';
+  function paintApply() {
+    if (pageColor === 'rgb(255, 255, 255)') {
+      apply.style.background = 'rgba(37, 36, 36, 1)';
+      apply.style.border = '1px solid';
+      apply.style.color = '#ffffffff';
+      apply.style.borderColor = 'rgba(37, 36, 36, 1)';
     } else {
-      container.style.display = "none";
+      apply.style.background = 'rgb(77,81,86)';
+      apply.style.border = '1px solid';
+      apply.style.color = '#ffffff';
+      apply.style.borderColor = 'rgb(77,81,86)';
+    }
+  }
+  paintApply();
+
+  grid.append(lang.wrap, ctr.wrap, apply);
+  pop.appendChild(grid);
+
+  (function preset() {
+    const url = new URL(location.href);
+    const hl = url.searchParams.get('hl');
+    const gl = url.searchParams.get('gl');
+    if (hl) { const lo = languages.find(l => l.code.toLowerCase() === hl.toLowerCase()); if (lo) lang.input.value = lo.name; }
+    if (gl) { const co = countries.find(c => c.code.toLowerCase() === gl.toLowerCase()); if (co) ctr.input.value = co.name; }
+  })();
+
+  apply.addEventListener('click', () => {
+    const language = languages.find(l => l.name.toLowerCase() === lang.input.value.toLowerCase());
+    const country  = countries.find(c => c.name.toLowerCase() === ctr.input.value.toLowerCase());
+    const url = new URL(location.href);
+    const before = url.searchParams.toString();
+    if (language) url.searchParams.set('hl', language.code);
+    if (country)  url.searchParams.set('gl', country.code.toUpperCase());
+    const after = url.searchParams.toString();
+    if (after !== before) {
+      location.href = url.toString();
+    } else {
+      pop.style.display = 'none';
     }
   });
 
-  // Create a container for input fields and button to align them side by side
-  const buttonContainer = document.createElement("div");
-  buttonContainer.style.display = "flex";
-  buttonContainer.style.justifyContent = "space-between";
-  buttonContainer.style.alignItems = "center";
-  buttonContainer.appendChild(fieldsContainer);
-  buttonContainer.appendChild(applyButton);
+  function closeAllDropdowns() {
+    for (const dd of pop.querySelectorAll('.gs-dropdown')) dd.style.display = 'none';
+    for (const inp of pop.querySelectorAll('.gs-pill input')) inp.setAttribute('aria-expanded', 'false');
+  }
 
-  // Add elements to the page
-  container.appendChild(buttonContainer);
-  document.body.appendChild(container);
-  setInitialValues();
+  function closeOutside(e){ if (!pop.contains(e.target) && e.target !== btn) { pop.style.display = 'none'; closeAllDropdowns(); } }
+  document.addEventListener('click', closeOutside);
+  pop.addEventListener('click', (e) => {
+    if (!lang.wrap.contains(e.target) && !ctr.wrap.contains(e.target)) closeAllDropdowns();
+  });
+  document.addEventListener('keydown', (e) => {
+    const focusInside = pop.contains(document.activeElement);
+    if (e.key === 'Enter' && pop.style.display !== 'none' && focusInside) apply.click();
+    if (e.key === 'Escape') { pop.style.display = 'none'; closeAllDropdowns(); }
+  });
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    pop.style.display = (pop.style.display === 'none') ? 'block' : 'none';
+    if (pop.style.display !== 'none') { place(); }
+  });
+}
+
+function waitForElement(selector, root = document, timeout = 8000) {
+  return new Promise((resolve, reject) => {
+    const found = root.querySelector(selector);
+    if (found) return resolve(found);
+    const obs = new MutationObserver(() => {
+      const el = root.querySelector(selector);
+      if (el) { obs.disconnect(); resolve(el); }
+    });
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(() => { obs.disconnect(); reject(new Error('not found')); }, timeout);
+  });
 }
