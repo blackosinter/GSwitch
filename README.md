@@ -1,11 +1,6 @@
 # Google Language & Country Switcher Extension
 
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/13fdef2d-4996-4245-be6e-72b6206bc491">
-</p>
-
-This extension simplifies changing language and country settings for Google Search and Google Lens. With this extension, users can easily switch between different languages and regions, optimizing search results to better match their preferences.
+This extension simplifies changing language and country settings for Google Search and Google Lens. With this extension, you can easily switch between different languages and regions, optimizing search results to better match their preferences.
 
 ## Features
 
@@ -15,21 +10,21 @@ This extension simplifies changing language and country settings for Google Sear
 - Provides more relevant search results based on user-selected language and region.
 
 ## Installation
-
+<h2>Chromium browsers</h2>
 1. Download the extension folder and place it wherever you prefer.
-2. In Google Chrome, open the Extensions settings and load the unpacked extension (select the extension folder).
+2. Open your chromium based browser, open the Extensions settings and load the unpacked extension (select the extension folder).
+
+<h2>Firefox based browsers</h2>
+1. Download the extension folder and place it wherever you prefer.
+2. Delete manifest.json and rename manifestfirefox to manifest.json
+3. Add all the files in the folder in zip files. 
+4. Open extension manager in your browser.
+5. Install  Add-on from file (our zip).
+
 ## Usage
-<h1>Google Search</h1>
+<h1>Usage</h1>
 
 Click on the Earth icon next to the search box and select your preferred language and country.
-If no country is specified, the region will default to your current location.
-
-<h1>Google Lens</h1>
-
-Upload your photo and change the language and country you like.
-
-If no country is specified, the region will default to your current location.
-
 
 ## Contributing
 
