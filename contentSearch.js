@@ -2,6 +2,8 @@ const pageColor = getComputedStyle(document.body).backgroundColor;
 
 let languages = [], countries = []
 
+const ext = (typeof browser !== 'undefined') ? browser : chrome;
+
 if (pageColor === 'rgb(255, 255, 255)') {
   globeColor = 'rgb(70, 70, 70)'
 } else {
@@ -12,8 +14,8 @@ if (pageColor === 'rgb(255, 255, 255)') {
 async function loadData() {
   try {
     const [resLang, resCountry] = await Promise.all([
-      fetch(chrome.runtime.getURL('languages.json')),
-      fetch(chrome.runtime.getURL('countries.json'))
+      fetch(ext.runtime.getURL('languages.json')),
+      fetch(ext.runtime.getURL('countries.json'))
     ]);
     [languages, countries] = await Promise.all([resLang.json(), resCountry.json()]);
   } catch (e) {
@@ -34,7 +36,7 @@ function main() {
   });
 
   const icon = document.createElement('span');
-  const iconUrl = chrome.runtime.getURL('icons/192.png');
+  const iconUrl = ext.runtime.getURL('icons/192.png');
   Object.assign(icon.style, {
     display: 'inline-block', width: '20px', height: '20px',
     backgroundColor: globeColor,
@@ -52,15 +54,21 @@ Object.assign(pop.style, {
   position: 'fixed',
   zIndex: '2147483647',
   padding: '10px',             
-  borderRadius: '12px',
-  boxShadow: '0 10px 30px rgba(0,0,0,.25)',
+  borderRadius: '20px',
   backgroundColor: pageColor,
   display: 'none',
   width: '340px',              
   boxSizing: 'border-box',
-  border: '1px solid rgba(255,255,255,.06)'
 });
 document.body.appendChild(pop);
+
+// Адаптивная обводка
+
+if (pageColor === 'rgb(255, 255, 255)') {
+  pop.style.border = '1px solid rgba(0, 0, 0, 0.15)'
+} else {
+  pop.style.border = '1px solid rgba(147, 147, 147, 0.13)'
+}
 
 function place() {
   const r = btn.getBoundingClientRect();
@@ -113,11 +121,10 @@ window.addEventListener('scroll', place, { passive: true });
     top: calc(100% + 6px);
     background: ${pageColor};
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,.18);
     max-height: 180px;
     overflow: auto;
     display: none;
-    border: 1px solid rgba(255,255,255,.06);
+    border: 1px solid rgba(109, 109, 109, 0.2);
   }
 
   .gs-item { padding: 8px 10px; cursor: pointer; }
@@ -185,6 +192,7 @@ window.addEventListener('scroll', place, { passive: true });
   const lang = createSearchInput(languages, 'Language', 'lang');
   const ctr  = createSearchInput(countries, 'Country', 'ctr');
 
+  // Стилизация кнопки Apply в зависимости от темы страницы
   const apply = document.createElement('button'); apply.className = 'gs-apply'; apply.textContent = 'Apply';
   function paintApply() {
     if (pageColor === 'rgb(255, 255, 255)') {
@@ -193,9 +201,9 @@ window.addEventListener('scroll', place, { passive: true });
       apply.style.color = '#ffffffff';
       apply.style.borderColor = 'rgba(37, 36, 36, 1)';
     } else {
-      apply.style.background = 'rgb(77,81,86)';
+      apply.style.background = 'rgba(58, 58, 58, 1)';
       apply.style.border = '1px solid';
-      apply.style.color = '#ffffff';
+      apply.style.color = '#ffffffff';
       apply.style.borderColor = 'rgb(77,81,86)';
     }
   }
