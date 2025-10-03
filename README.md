@@ -18,8 +18,10 @@ This extension simplifies changing language and country settings for Google Sear
 1. Download the extension folder and place it wherever you prefer.
 2. Delete manifest.json and rename manifestfirefox to manifest.json
 3. Add all the files in the folder in zip files. 
-4. Open extension manager in your browser.
-5. Install  Add-on from file (our zip).
+4. Open about:debugging
+5. Open "This Firefox"
+6. Click on "Load Temporary Add-on"
+7. Select zip file.
 
 ## Usage
 <h1>Usage</h1>
