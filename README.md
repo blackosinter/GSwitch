@@ -1,7 +1,7 @@
 <img width="1922" height="1080" alt="Instagram post - 11" src="https://github.com/user-attachments/assets/373158c5-90d5-4d50-93e1-7c56aff90a88" />
 
 
-<img width="800" height="800" alt="blackvision11" src="https://github.com/user-attachments/assets/b1aef25b-78bc-49cf-bbd9-61e788b5dc9d" />
+<img width="512" height="512" alt="blackvision11" src="https://github.com/user-attachments/assets/b1aef25b-78bc-49cf-bbd9-61e788b5dc9d" />
 
 
 # Google Language & Country Switcher Extension
