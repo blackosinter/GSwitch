@@ -10,7 +10,6 @@ if (pageColor === 'rgb(255, 255, 255)') {
   globeColor = 'rgb(190, 190, 190)'
 }
 
-
 async function loadData() {
   try {
     const [resLang, resCountry] = await Promise.all([
@@ -32,13 +31,13 @@ function main() {
   Object.assign(btn.style, {
     display: 'flex', flex: '0 1 auto', alignItems: 'center', justifyContent: 'center',
     border: 'none', padding: '0 8px', borderRadius: '5px', cursor: 'pointer',
-    width: '35px', background: 'transparent', lineHeight: '44px', boxSizing: 'border-box'
+    width: '40px', background: 'transparent', lineHeight: '44px', boxSizing: 'border-box'
   });
 
   const icon = document.createElement('span');
   const iconUrl = ext.runtime.getURL('icons/192.png');
   Object.assign(icon.style, {
-    display: 'inline-block', width: '20px', height: '20px',
+    display: 'inline-block', width: '19px', height: '19px',
     backgroundColor: globeColor,
     WebkitMask: `url(${iconUrl}) center / contain no-repeat`,
     mask: `url(${iconUrl}) center / contain no-repeat`,
@@ -46,8 +45,17 @@ function main() {
   });
   btn.appendChild(icon);
 
-  waitForElement('.SDkEP').then(h=>h.appendChild(btn)).catch(()=>document.body.appendChild(btn));
+  waitForElement('.WC2Die').then(h=>h.appendChild(btn)).catch(()=>document.body.appendChild(btn));
 
+  const recenterButton = () => {
+    const LensButton = document.querySelector('.Gdd5U');
+    const styles = window.getComputedStyle(LensButton);
+    NewButtonSize = parseInt(`${styles.height}`, 10) - 4;
+    icon.style.width = `${NewButtonSize}px`;
+    icon.style.height = icon.style.width
+    icon.style.verticalAlign = 'middle';
+
+  }
 
  const pop = document.createElement('div');
 Object.assign(pop.style, {
@@ -71,6 +79,7 @@ if (pageColor === 'rgb(255, 255, 255)') {
 }
 
 function place() {
+  recenterButton()
   const r = btn.getBoundingClientRect();
   const w = pop.offsetWidth || 340;
   const h = pop.offsetHeight || 0;
