@@ -23,16 +23,25 @@ This extension simplifies changing language and country settings for Google Sear
 
 <h2>From Source Code</h2>
 <h3>Chromium browsers</h3>
+
 1. Download the extension folder and place it wherever you prefer.
+
 2. Open your chromium based browser, open the Extensions settings and load the unpacked extension (select the extension folder).
 
 <h3>Firefox based browsers</h3>
+
 1. Download the extension folder and place it wherever you prefer.
+
 2. Delete manifest.json and rename manifestfirefox to manifest.json
+
 3. Add all the files in the folder in zip files. 
+
 4. Open about:debugging
+
 5. Open "This Firefox"
+
 6. Click on "Load Temporary Add-on"
+
 7. Select zip file.
 
 ## Usage
