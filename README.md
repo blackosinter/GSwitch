@@ -16,11 +16,19 @@ This extension simplifies changing language and country settings for Google Sear
 - Provides more relevant search results based on user-selected language and region.
 
 ## Installation
-<h2>Chromium browsers</h2>
+<h2>Extension store</h2>
+
+[Chromium based browsers](https://chromewebstore.google.com/detail/gswitch/gleogimfdeaapagejhfmlgkgenfiaoha)
+
+[Firefox based browsers](https://addons.mozilla.org/en-US/firefox/addon/gswitch)
+
+
+<h2>From Source Code</h2>
+<h3>Chromium browsers</h3>
 1. Download the extension folder and place it wherever you prefer.
 2. Open your chromium based browser, open the Extensions settings and load the unpacked extension (select the extension folder).
 
-<h2>Firefox based browsers</h2>
+<h3>Firefox based browsers</h3>
 1. Download the extension folder and place it wherever you prefer.
 2. Delete manifest.json and rename manifestfirefox to manifest.json
 3. Add all the files in the folder in zip files. 
