@@ -45,7 +45,7 @@ function main() {
   });
   btn.appendChild(icon);
 
-  waitForElement('.WC2Die').then(h=>h.appendChild(btn)).catch(()=>document.body.appendChild(btn));
+  waitForElement('.WC2Die').then(h=>h.appendChild(btn)).catch(() => {});
 
  const pop = document.createElement('div');
   Object.assign(pop.style, {
@@ -268,3 +268,4 @@ function waitForElement(selector, root = document, timeout = 8000) {
     setTimeout(() => { obs.disconnect(); reject(new Error('not found')); }, timeout);
   });
 }
+
