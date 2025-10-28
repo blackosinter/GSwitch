@@ -11,7 +11,6 @@
   "content_scripts": [
     {
       "matches": ["https://www.google.com/*"],
-      "exclude_matches": ["https://www.google.com/maps*"],
       "js": ["contentSearch.js"],
       "run_at": "document_idle"
     }
@@ -29,5 +28,6 @@
   }
 }
 }
+
 
 
