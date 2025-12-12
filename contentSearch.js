@@ -45,7 +45,17 @@ function main() {
   });
   btn.appendChild(icon);
 
-  waitForElement('.WC2Die').then(h=>h.appendChild(btn)).catch(() => {});
+ waitForElement('.WC2Die')
+  .then(h => {
+    const target = h.querySelector('.nDcEnd'); // элемент с нужным классом
+
+    if (target) {
+      target.after(btn); // вставляем после него
+    } else {
+      h.appendChild(btn); // fallback — если такого элемента нет
+    }
+  })
+  .catch(() => {}); 
 
  const pop = document.createElement('div');
   Object.assign(pop.style, {
