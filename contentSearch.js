@@ -45,9 +45,9 @@ function main() {
   });
   btn.appendChild(icon);
 
- waitForElement('.WC2Die')
+ waitForElement('.fM33ce')
   .then(h => {
-    const target = h.querySelector('.nDcEnd'); // элемент с нужным классом
+    const target = h.querySelector('.etxtjc'); // элемент с нужным классом
 
     if (target) {
       target.after(btn); // вставляем после него
