@@ -5,9 +5,9 @@ let languages = [], countries = []
 const ext = (typeof browser !== 'undefined') ? browser : chrome;
 
 if (pageColor === 'rgb(255, 255, 255)') {
-  globeColor = 'rgb(70, 70, 70)'
+  globeColor = 'rgb(31, 31, 31)'
 } else {
-  globeColor = 'rgb(190, 190, 190)'
+  globeColor = 'rgb(232, 232, 232)'
 }
 
 async function loadData() {
@@ -45,17 +45,114 @@ function main() {
   });
   btn.appendChild(icon);
 
- waitForElement('.fM33ce')
-  .then(h => {
-    const target = h.querySelector('.etxtjc'); // элемент с нужным классом
-
-    if (target) {
-      target.after(btn); // вставляем после него
-    } else {
-      h.appendChild(btn); // fallback — если такого элемента нет
+  function updateGlobeColor(rightContainer) {
+    const svgs = Array.from(rightContainer.querySelectorAll('svg'));
+    let matchedColor = null;
+    for (const svg of svgs) {
+      if (btn.contains(svg)) continue;
+      const style = getComputedStyle(svg);
+      const color = style.color;
+      if (color && color !== 'rgba(0, 0, 0, 0)' && color !== 'rgb(0, 0, 0)') {
+        matchedColor = color;
+        break;
+      }
+      const fill = style.fill;
+      if (fill && fill !== 'none' && fill !== 'currentColor' && fill !== 'rgba(0, 0, 0, 0)' && fill !== 'rgb(0, 0, 0)') {
+        matchedColor = fill;
+        break;
+      }
+      const path = svg.querySelector('path');
+      if (path) {
+        const pathStyle = getComputedStyle(path);
+        const pathFill = pathStyle.fill;
+        if (pathFill && pathFill !== 'none' && pathFill !== 'currentColor' && pathFill !== 'rgba(0, 0, 0, 0)' && pathFill !== 'rgb(0, 0, 0)') {
+          matchedColor = pathFill;
+          break;
+        }
+      }
     }
-  })
-  .catch(() => {}); 
+    if (matchedColor) {
+      icon.style.backgroundColor = matchedColor;
+    }
+  }
+
+  function injectButton(input) {
+    let ancestor = input;
+    let rightContainer = null;
+    while (ancestor && ancestor.tagName !== 'FORM') {
+      if (ancestor.nextElementSibling) {
+        const sib = ancestor.nextElementSibling;
+        if (sib.querySelector('svg, button, [role="button"], [jsname], [aria-label]')) {
+          rightContainer = sib;
+          break;
+        }
+      }
+      ancestor = ancestor.parentElement;
+    }
+
+    if (!rightContainer) {
+      return false;
+    }
+
+    updateGlobeColor(rightContainer);
+
+    if (rightContainer.contains(btn)) {
+      return true;
+    }
+
+    const icons = Array.from(rightContainer.querySelectorAll('[role="button"], button, [jsname], svg'));
+    const topLevelIcons = icons.filter(el => {
+      let parent = el.parentElement;
+      while (parent && parent !== rightContainer) {
+        if (icons.includes(parent)) return false;
+        parent = parent.parentElement;
+      }
+      return true;
+    });
+
+    if (topLevelIcons.length > 0) {
+      const aiIcon = topLevelIcons.find(el => {
+        const text = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent || '').toLowerCase();
+        if (text.includes('ai') || text.includes('ии') || text.includes('ia') || text.includes('gemini')) return true;
+        const sub = el.querySelector('[aria-label], [title]');
+        if (sub) {
+          const subText = (sub.getAttribute('aria-label') || sub.getAttribute('title') || '').toLowerCase();
+          return subText.includes('ai') || subText.includes('ии') || subText.includes('ia') || subText.includes('gemini');
+        }
+        return false;
+      });
+
+      if (aiIcon) {
+        aiIcon.before(btn);
+      } else {
+        const lastIcon = topLevelIcons[topLevelIcons.length - 1];
+        lastIcon.after(btn);
+      }
+    } else {
+      rightContainer.appendChild(btn);
+    }
+    return true;
+  }
+
+  waitForElement('textarea[name="q"], input[name="q"]')
+    .then(input => {
+      if (injectButton(input)) return;
+
+      const searchBar = input.closest('form') || document.body;
+      const observer = new MutationObserver(() => {
+        if (injectButton(input)) {
+          observer.disconnect();
+        }
+      });
+      observer.observe(searchBar, { childList: true, subtree: true });
+      setTimeout(() => {
+        observer.disconnect();
+        if (!document.body.contains(btn)) {
+          input.after(btn);
+        }
+      }, 10000);
+    })
+    .catch(() => {}); 
 
  const pop = document.createElement('div');
   Object.assign(pop.style, {
@@ -209,7 +306,7 @@ function main() {
       apply.style.color = '#ffffffff';
       apply.style.borderColor = 'rgba(37, 36, 36, 1)';
     } else {
-      apply.style.background = 'rgba(58, 58, 58, 1)';
+      apply.style.background = 'rgb(95, 99, 104)';
       apply.style.border = '1px solid';
       apply.style.color = '#ffffffff';
       apply.style.borderColor = 'rgb(77,81,86)';
